@@ -325,7 +325,7 @@ export default function AdminPage() {
           </div>
           
           <div className="flex items-center gap-3">
-            <span className="text-xs font-mono text-slate-500 hidden md:block">/admin</span>
+            <span className="text-xs font-mono text-slate-500 hidden md:block">secured-telemetry</span>
             <button
               onClick={handleLogout}
               className="btn-secondary text-xs py-1.5 px-3 text-rose-300 border-rose-500/30 hover:bg-rose-500/10 flex items-center gap-1.5"
