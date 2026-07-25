@@ -19,13 +19,13 @@ The **AI Resume & Mock Interview Coach** combines interactive resume authoring, 
 
 ## 📸 Screenshots
 
-<!-- SCREENSHOT: Resume Builder View -->
+![Resume Builder with real-time A4 preview](docs/screenshots/builder.png)
 *Figure 1: Resume Builder with real-time A4 preview, dynamic page-break indicators, and multi-page PDF export.*
 
-<!-- SCREENSHOT: AI Resume Analysis & ATS Match View -->
+![AI ATS Analysis View](docs/screenshots/ats_analysis.png)
 *Figure 2: AI ATS Analysis displaying match scores, keyword gaps, and actionable recommendations.*
 
-<!-- SCREENSHOT: Hardened Admin Analytics Dashboard -->
+![Hardened Admin Analytics Dashboard](docs/screenshots/admin_dashboard.png)
 *Figure 3: Hardened Admin Analytics Dashboard showing aggregate metrics, ATS score distribution, and top skill gap charts.*
 
 ---

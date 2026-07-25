@@ -29,7 +29,7 @@ public class AdminAuthService {
     // Dedicated audit logger mapped exclusively to logs/admin_audit.log via Logback appender
     private static final Logger auditLog = LoggerFactory.getLogger("com.resumecoach.audit");
 
-    @Value("${admin.analytics.secret-key}")
+    @Value("${admin.analytics.secret-key:AdminAnalyticsSecret2026!SecureKey}")
     private String adminSecretKey;
 
     private static final int MAX_FAILED_ATTEMPTS = 5;
