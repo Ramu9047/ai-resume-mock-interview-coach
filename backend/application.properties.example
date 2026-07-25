@@ -1,0 +1,22 @@
+# ─── Server Configuration ──────────────────────────────────────────────────────
+server.port=8080
+
+# ─── MongoDB Connection ───────────────────────────────────────────────────────
+spring.data.mongodb.uri=mongodb://localhost:27017/resume_coach
+
+# ─── Groq AI API Configuration ────────────────────────────────────────────────
+# Set GROQ_API_KEY as an environment variable or fill in below for local dev
+groq.api.key=${GROQ_API_KEY:your_groq_api_key_here}
+groq.api.base-url=https://api.groq.com/openai/v1
+groq.model=llama-3.3-70b-versatile
+
+# ─── File Upload Limits ───────────────────────────────────────────────────────
+spring.servlet.multipart.max-file-size=5MB
+spring.servlet.multipart.max-request-size=6MB
+
+# ─── Admin Analytics Hardened Credentials ─────────────────────────────────────
+admin.analytics.secret-key=${ADMIN_ANALYTICS_SECRET:your_admin_secret_key_here}
+
+# ─── Isolated Audit Logging Configuration ─────────────────────────────────────
+logging.level.com.resumecoach=INFO
+logging.level.org.springframework.web=INFO

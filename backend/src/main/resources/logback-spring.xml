@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <!-- Standard Console Appender for normal application logs -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+    <!-- Dedicated Appender for Admin Audit events ONLY -->
+    <appender name="ADMIN_AUDIT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/admin_audit.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/admin_audit-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>100MB</totalSizeCap>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Dedicated Logger for com.resumecoach.audit (additivity=false prevents pollution of root logger/file) -->
+    <logger name="com.resumecoach.audit" level="INFO" additivity="false">
+        <appender-ref ref="ADMIN_AUDIT_FILE" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+</configuration>

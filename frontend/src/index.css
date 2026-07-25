@@ -1,0 +1,203 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base Reset & Globals ─────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-navy-900 text-slate-100 font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.18), transparent),
+      radial-gradient(ellipse 40% 30% at 80% 80%, rgba(16,185,129,0.06), transparent);
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-navy-800; }
+  ::-webkit-scrollbar-thumb { @apply bg-navy-600 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-indigo-600; }
+}
+
+/* ── PDF Export Mode Hiding ───────────────────────────────────────────── */
+.pdf-export-mode .page-break-divider,
+.pdf-export-mode .page-break-indicator,
+.pdf-export-mode .preview-debug-overlay,
+.pdf-export-mode [data-debug-overlay] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* ── Reusable Component Classes ───────────────────────────────────────────── */
+@layer components {
+  /* Glass card */
+  .glass-card {
+    @apply bg-navy-800/60 backdrop-blur-sm border border-white/5 rounded-2xl shadow-card;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:shadow-card-hover hover:border-white/10 hover:-translate-y-0.5;
+  }
+
+  /* Primary gradient button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-gradient-to-r from-indigo-600 to-indigo-500
+           hover:from-indigo-500 hover:to-indigo-400
+           text-white font-semibold px-6 py-3 rounded-xl
+           shadow-glow-indigo
+           transition-all duration-200 active:scale-95
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-navy-700/80 hover:bg-navy-600/80
+           border border-white/10 hover:border-white/20
+           text-slate-200 font-medium px-6 py-3 rounded-xl
+           transition-all duration-200 active:scale-95
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           text-slate-400 hover:text-white
+           hover:bg-white/5
+           px-4 py-2 rounded-lg
+           transition-all duration-200;
+  }
+
+  /* Textarea / input base */
+  .input-base {
+    @apply w-full bg-navy-800/80 border border-white/10
+           focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20
+           rounded-xl px-4 py-3 text-slate-200
+           placeholder:text-slate-500
+           outline-none transition-all duration-200 resize-none;
+  }
+
+  /* Category badge */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-technical  { @apply badge bg-indigo-500/20 text-indigo-300 border border-indigo-500/30; }
+  .badge-behavioral { @apply badge bg-amber-500/20 text-amber-300 border border-amber-500/30; }
+  .badge-role-fit   { @apply badge bg-emerald-500/20 text-emerald-300 border border-emerald-500/30; }
+
+  /* Section heading */
+  .section-title {
+    @apply font-display text-xl font-semibold text-white mb-4;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-300 bg-clip-text text-transparent;
+  }
+
+  /* Page wrapper */
+  .page-wrapper {
+    @apply max-w-4xl mx-auto px-4 sm:px-6 py-10;
+  }
+
+  /* Score colour helpers */
+  .score-high   { @apply text-emerald-400; }
+  .score-mid    { @apply text-amber-400; }
+  .score-low    { @apply text-rose-400; }
+
+  /* Keyword gap chips */
+  .keyword-chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border font-medium
+           cursor-default transition-all duration-200 select-none;
+  }
+  .keyword-chip-high {
+    @apply keyword-chip bg-rose-500/15 border-rose-500/30 text-rose-300
+           hover:bg-rose-500/25 hover:border-rose-500/50 hover:shadow-glow-rose;
+  }
+  .keyword-chip-mid {
+    @apply keyword-chip bg-amber-500/15 border-amber-500/30 text-amber-300
+           hover:bg-amber-500/25 hover:border-amber-500/50;
+  }
+  .keyword-chip-low {
+    @apply keyword-chip bg-navy-600/60 border-white/10 text-slate-400
+           hover:bg-navy-500/60 hover:border-white/20;
+  }
+
+  /* Resume builder */
+  .builder-preview {
+    @apply bg-white text-slate-900 font-sans;
+    font-family: 'Inter', 'Georgia', serif;
+  }
+
+  .template-card {
+    @apply glass-card p-4 cursor-pointer border-2 transition-all duration-300
+           hover:border-indigo-500/50 hover:-translate-y-1 hover:shadow-card-hover;
+  }
+  .template-card-active {
+    @apply template-card border-indigo-500 shadow-glow-indigo;
+  }
+
+  /* Admin dashboard chart container */
+  .chart-card {
+    @apply glass-card p-6 hover:border-white/10 transition-all duration-300;
+  }
+}
+
+/* ── Utility Animations ──────────────────────────────────────────────────── */
+@layer utilities {
+  .animate-delay-100 { animation-delay: 0.1s; }
+  .animate-delay-200 { animation-delay: 0.2s; }
+  .animate-delay-300 { animation-delay: 0.3s; }
+  .animate-delay-400 { animation-delay: 0.4s; }
+  .animate-delay-500 { animation-delay: 0.5s; }
+
+  .animation-fill-both { animation-fill-mode: both; }
+}
+
+/* ── Drop-zone drag-active state ─────────────────────────────────────────── */
+.drop-zone-active {
+  border-color: rgba(99, 102, 241, 0.7) !important;
+  background-color: rgba(99, 102, 241, 0.08) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2), inset 0 0 40px rgba(99, 102, 241, 0.05);
+}
+
+/* ── Lightweight CSS Page Fade Transition ─────────────────────────────────── */
+@keyframes pageFadeIn {
+  0%   { opacity: 0.85; }
+  100% { opacity: 1; }
+}
+
+.page-enter {
+  opacity: 1;
+  animation: pageFadeIn 0.2s ease-out;
+}
+
+/* ── Animated gradient mesh (hero only) ──────────────────────────────────── */
+@keyframes meshDrift1 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  33%      { transform: translate(3%, -4%) scale(1.05); }
+  66%      { transform: translate(-2%, 3%) scale(0.97); }
+}
+@keyframes meshDrift2 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  40%      { transform: translate(-4%, 5%) scale(1.04); }
+  70%      { transform: translate(3%, -2%) scale(0.98); }
+}
+@keyframes meshDrift3 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  25%      { transform: translate(5%, 2%) scale(1.03); }
+  75%      { transform: translate(-3%, -4%) scale(1.06); }
+}

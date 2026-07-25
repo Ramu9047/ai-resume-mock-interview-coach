@@ -1,0 +1,12 @@
+# Logs and Security State
+logs/
+*.log
+logs/*
+admin_security_state.json
+
+# Build outputs
+target/
+
+# IDE files
+.idea/
+.vscode/

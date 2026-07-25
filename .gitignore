@@ -1,0 +1,29 @@
+# Secrets
+.env
+.env.*
+!.env.example
+application-local.properties
+application-secrets.properties
+
+# Runtime/security state
+logs/
+*.log
+admin_security_state.json
+
+# Build artifacts
+node_modules/
+target/
+dist/
+build/
+*.class
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+
+# Temporary scratch files
+scratch*
