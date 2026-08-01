@@ -36,6 +36,11 @@ public class GroqService {
             ObjectMapper objectMapper) {
         this.model = model;
         this.objectMapper = objectMapper;
+        log.info("[GROQ DIAGNOSTIC] GroqService initialized: apiKey isBlank={} length={} keyPrefix='{}' baseUrl={} model={}",
+            apiKey == null || apiKey.isBlank(),
+            apiKey != null ? apiKey.length() : 0,
+            apiKey != null && apiKey.length() > 6 ? apiKey.substring(0, 6) + "..." : apiKey,
+            baseUrl, model);
         this.restClient = RestClient.builder()
             .baseUrl(baseUrl)
             .defaultHeader("Authorization", "Bearer " + apiKey)

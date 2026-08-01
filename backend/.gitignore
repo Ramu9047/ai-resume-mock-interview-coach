@@ -3,6 +3,10 @@ logs/
 *.log
 logs/*
 admin_security_state.json
+.env
+.env.*
+!.env.example
+
 
 # Build outputs
 target/

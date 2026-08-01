@@ -39,7 +39,7 @@ The **AI Resume & Mock Interview Coach** combines interactive resume authoring, 
 - **PDF Export**: `html2pdf.js` & `html2canvas` (with print-budget layout protection and break-inside prevention)
 
 ### Backend
-- **Framework**: Spring Boot 3.4 (Java 17+)
+- **Framework**: Spring Boot 3.4 (Java 21 / 17+)
 - **Database**: MongoDB (Spring Data MongoDB)
 - **AI Engine**: Groq REST API (`llama-3.3-70b-versatile`)
 - **PDF Processing**: Apache PDFBox 3.0
@@ -59,65 +59,119 @@ The Admin Analytics portal incorporates multi-layered security protections:
 
 ---
 
-## 📌 Project Status & Scope
+## 🐳 Docker Containerization
 
-> **Note**: This project is built as a **showcase / demonstration application**.
-> User sessions in the Resume Builder and Mock Interview module are **anonymous and browser-local by design** (stored in browser state/session without requiring multi-tenant user account registration). Admin analytics access is protected via dedicated backend credentials.
+The repository includes complete multi-stage Dockerfiles and a `docker-compose.yml` stack orchestrating MongoDB, Spring Boot Backend, and Nginx Frontend.
+
+### Quick Start with Docker Compose
+
+1. Copy `.env.example` to `.env` and fill in your `GROQ_API_KEY`:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Build and launch the entire stack:
+   ```bash
+   docker compose up --build -d
+   ```
+
+3. Access the services:
+   - **Frontend**: http://localhost:5173
+   - **Backend API**: http://localhost:8080/api/health
+   - **MongoDB**: localhost:27017
 
 ---
 
-## 🚀 Getting Started
+### 📦 Docker Hub Build & Push Commands
+
+To build and publish standalone images to your Docker Hub repository:
+
+#### 1. Login to Docker Hub
+```bash
+docker login
+```
+
+#### 2. Build & Push Backend Image
+```bash
+# Build backend image with tag
+docker build -t <your-dockerhub-username>/resume-coach-backend:latest ./backend
+
+# Push backend image to Docker Hub
+docker push <your-dockerhub-username>/resume-coach-backend:latest
+```
+
+#### 3. Build & Push Frontend Image
+```bash
+# Build frontend image (optionally pass VITE_API_BASE_URL)
+docker build --build-arg VITE_API_BASE_URL=https://your-render-backend.onrender.com \
+  -t <your-dockerhub-username>/resume-coach-frontend:latest ./frontend
+
+# Push frontend image to Docker Hub
+docker push <your-dockerhub-username>/resume-coach-frontend:latest
+```
+
+---
+
+## 🌐 Production Deployment Guide
+
+### Option 1: Deploy Backend on Render & Frontend on Vercel
+
+#### A. Backend Deployment (Render)
+
+1. Sign in to [Render](https://render.com/).
+2. Create a new **Web Service** and connect your repository (or use the included `render.yaml` Blueprint).
+3. Set the build parameters:
+   - **Root Directory**: `backend`
+   - **Environment**: Docker (or Java Web Service)
+   - **Dockerfile Path**: `Dockerfile`
+   - **Health Check Path**: `/api/health`
+4. Set the Environment Variables:
+   - `GROQ_API_KEY`: Your Groq API key from console.groq.com
+   - `MONGODB_URI`: Your MongoDB Atlas URI (e.g. `mongodb+srv://user:pass@cluster.mongodb.net/resume_coach`)
+   - `ADMIN_ANALYTICS_SECRET`: Secret key for Admin Analytics dashboard
+   - `ALLOWED_ORIGINS`: `https://your-app.vercel.app`
+5. Click **Deploy Web Service**. Render will expose a public backend URL (e.g., `https://resume-coach-backend.onrender.com`).
+
+#### B. Frontend Deployment (Vercel)
+
+1. Sign in to [Vercel](https://vercel.com/).
+2. Click **Add New Project** and import your repository.
+3. Set the project configuration:
+   - **Framework Preset**: Vite
+   - **Root Directory**: `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+4. Add Environment Variable:
+   - `VITE_API_BASE_URL`: `https://resume-coach-backend.onrender.com` (Your Render backend URL)
+5. Click **Deploy**. Vercel will build and host your frontend globally.
+
+---
+
+## 🚀 Local Development Setup
 
 ### Prerequisites
-- **Java 17** or higher
+- **Java 17/21**
 - **Maven 3.8+**
-- **Node.js 18+** & npm
-- **MongoDB** running locally on default port `27017` (or remote URI)
-- **Groq API Key** (Free tier available at [console.groq.com](https://console.groq.com/keys))
+- **Node.js 20+** & npm
+- **MongoDB** running locally on default port `27017`
+- **Groq API Key** ([console.groq.com](https://console.groq.com/keys))
 
----
-
-### Step 1: Environment Setup
-
-Create a `.env` file at the root directory by copying `.env.example`:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and set your credentials:
-
-```ini
-GROQ_API_KEY=gsk_your_actual_groq_api_key
-ADMIN_ANALYTICS_SECRET=YourSecureAdminSecretKey2026!
-MONGODB_URI=mongodb://localhost:27017/resume_coach
-PORT=8080
-```
-
----
-
-### Step 2: Run the Backend
+### Step 1: Run the Backend
 
 ```bash
 cd backend
 mvn spring-boot:run
 ```
+Backend starts on **http://localhost:8080**.
 
-The Spring Boot backend will start on **http://localhost:8080**.
-
----
-
-### Step 3: Run the Frontend
-
-In a new terminal window:
+### Step 2: Run the Frontend
 
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-
-Open your browser at **http://localhost:5173**. Vite's dev server automatically proxies `/api/*` requests to the Spring Boot backend on port 8080.
+Frontend starts on **http://localhost:5173**.
 
 ---
 
@@ -128,14 +182,12 @@ AI Resume & Mock Interview Coach/
 ├── backend/
 │   ├── src/main/java/com/resumecoach/
 │   │   ├── config/          # Web & Security CORS configurations
-│   │   ├── controller/      # REST API Controllers (Resume, Interview, Builder, Admin)
-│   │   ├── interceptor/     # AdminAuthInterceptor for route protection
+│   │   ├── controller/      # REST Controllers (Resume, Interview, Builder, Admin, Health)
 │   │   ├── model/           # MongoDB Entities & DTO Data Models
 │   │   ├── repository/      # Spring Data Mongo Repositories
 │   │   └── service/         # Business Logic (Groq AI, PDFBox Parsing, Admin Auth)
-│   ├── src/main/resources/
-│   │   ├── application.properties
-│   │   └── logback-spring.xml   # Dedicated [ADMIN AUDIT] Logback appender
+│   ├── src/main/resources/  # application.properties & logback-spring.xml
+│   ├── Dockerfile           # Multi-stage Maven + Temurin JRE Dockerfile
 │   └── pom.xml
 │
 ├── frontend/
@@ -143,11 +195,14 @@ AI Resume & Mock Interview Coach/
 │   │   ├── api/             # Centralized Axios API client
 │   │   ├── components/      # Navigation, Resume Preview, Hardened Lockscreen
 │   │   ├── pages/           # Builder, Upload, Feedback, Interview, Admin Analytics
-│   │   ├── App.jsx
-│   │   └── index.css        # Core Design System, A4 Print Budget CSS, PDF Export mode
-│   ├── package.json
-│   └── vite.config.js
+│   │   └── index.css        # Core Design System & A4 Print Budget CSS
+│   ├── Dockerfile           # Multi-stage Node + Nginx Dockerfile
+│   ├── nginx.conf           # SPA Nginx Routing Configuration
+│   ├── vercel.json          # Vercel Deployment & Rewrites
+│   └── package.json
 │
+├── docker-compose.yml       # Full-stack orchestrator (MongoDB + Backend + Frontend)
+├── render.yaml              # Render Cloud Infrastructure Blueprint
 ├── .env.example
 ├── .gitignore
 └── README.md

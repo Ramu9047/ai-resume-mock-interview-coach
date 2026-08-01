@@ -1,0 +1,52 @@
+services:
+  # ─── MongoDB Database ────────────────────────────────────────────────────────
+  mongodb:
+    image: mongo:7.0
+    container_name: resume_coach_db
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=resume_coach
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Spring Boot Backend ──────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: resume_coach_backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - MONGODB_URI=mongodb://mongodb:27017/resume_coach
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - ADMIN_ANALYTICS_SECRET=${ADMIN_ANALYTICS_SECRET:-AdminAnalyticsSecret2026!SecureKey}
+      - ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  # ─── Vite React Frontend ──────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: resume_coach_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
+    driver: local

@@ -10,7 +10,7 @@ import AdminPage from './pages/AdminPage'
 
 export default function App() {
   return (
-    <BrowserRouter basename="/tools/resume-coach">
+    <BrowserRouter basename={(import.meta.env.BASE_URL || '/').replace(/\/$/, '') || '/'}>
       <Navbar />
       <PageTransition>
         <Routes>

@@ -2,8 +2,8 @@ import axios from 'axios'
 
 const client = axios.create({
   // In dev, Vite's proxy forwards /api → http://localhost:8080
-  // In production, the base URL would be your deployed backend
-  baseURL: '/',
+  // In production, VITE_API_BASE_URL points to deployed Render backend
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/',
   timeout: 120000, // 120s — Groq LLM responses with sub-scores
   headers: { 'Accept': 'application/json' },
 })
