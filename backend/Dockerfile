@@ -14,12 +14,16 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Create non-root user for security
+# Create non-root user and logs directory with proper ownership
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
 
 # Copy compiled JAR from builder stage
 COPY --from=builder /app/target/resume-coach-backend-*.jar app.jar
+
+# Ensure /app and /app/logs are owned by appuser
+RUN mkdir -p /app/logs && chown -R appuser:appgroup /app
+
+USER appuser
 
 ENV PORT=8080
 EXPOSE 8080
