@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor

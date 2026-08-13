@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class AnalyticsService {
 
     private final MongoTemplate mongo;

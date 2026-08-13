@@ -2,29 +2,21 @@ services:
   # ─── Spring Boot Backend Web Service ──────────────────────────────────────────
   - type: web
     name: resume-coach-backend
-    env: docker
+    runtime: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
-    region: singapore # or oregon, frankfurt, Ohio
+    region: singapore # options: singapore, oregon, frankfurt, ohio
     plan: free
     healthCheckPath: /api/health
     envVars:
       - key: PORT
-        value: 10000
+        value: 8080
       - key: MONGODB_URI
-        fromDatabase:
-          name: resume-coach-db
-          property: connectionString
+        sync: false # Set your MongoDB Atlas connection string in Render Dashboard
       - key: GROQ_API_KEY
-        sync: false # Prompts user to enter key in Render Dashboard
+        sync: false # Set your Groq API Key in Render Dashboard
       - key: ADMIN_ANALYTICS_SECRET
         generateValue: true
       - key: ALLOWED_ORIGINS
         sync: false # Set to your Vercel frontend URL e.g. https://your-app.vercel.app
 
-databases:
-  # ─── Render Managed MongoDB Database ─────────────────────────────────────────
-  - name: resume-coach-db
-    databaseName: resume_coach
-    region: singapore
-    plan: free

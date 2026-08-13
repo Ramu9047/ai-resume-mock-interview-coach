@@ -37,6 +37,7 @@ export async function getSession(sessionId) {
   const { data } = await client.get(`/api/resume/session/${sessionId}`)
   return data
 }
+export const getAnalysisResults = getSession
 
 /**
  * POST /api/resume/parse-pdf
@@ -90,6 +91,7 @@ export async function submitAnswer(sessionId, questionId, answer) {
   })
   return data
 }
+export const evaluateAnswer = submitAnswer
 
 /**
  * GET /api/interview/summary/:sessionId

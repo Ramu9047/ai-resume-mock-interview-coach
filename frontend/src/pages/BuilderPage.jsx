@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { saveResumeDraft, getResumeDraft, parsePdfToDraft, improveField } from '../api/client'
 import AnimatedGradientMesh from '../components/AnimatedGradientMesh'
+import FlagLogoMark from '../components/FlagLogoMark'
 
 // ── Template definitions ──────────────────────────────────────────────────────
 
@@ -69,21 +70,21 @@ function useDebounce(fn, delay) {
 function Section({ title, icon, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="border border-white/5 rounded-2xl overflow-hidden">
+    <div className="border border-[#26262B] rounded-lg overflow-hidden bg-[#131316] shadow-xs">
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between px-5 py-4
-                   bg-navy-800/60 hover:bg-navy-700/60 transition-colors duration-200"
+                   bg-[#1B1B1F] hover:bg-[#212126] transition-colors duration-150"
       >
-        <span className="flex items-center gap-2 font-display font-semibold text-white text-sm">
-          <span className="text-indigo-400">{icon}</span>
+        <span className="flex items-center gap-2 font-display font-bold text-[#F5F5F3] text-sm">
+          <span className="text-[#FF5A1F]">{icon}</span>
           {title}
         </span>
         <motion.span
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
-          className="text-slate-500"
+          className="text-[#8A8A8F] font-mono text-xs"
         >
           ▾
         </motion.span>
@@ -94,10 +95,10 @@ function Section({ title, icon, children, defaultOpen = true }) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
             style={{ overflow: 'hidden' }}
           >
-            <div className="px-5 py-4 bg-navy-900/40 space-y-3">{children}</div>
+            <div className="px-5 py-4 bg-[#131316] space-y-3 border-t border-[#26262B]">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -122,7 +123,18 @@ function Field({ label, action, children }) {
   )
 }
 
-function Input({ value, onChange, placeholder, type = 'text', disabled = false, readOnly = false }) {
+function Input({ value, onChange, placeholder, type = 'text', disabled = false, readOnly = false, onKeyDown }) {
+  const handleKeyDown = (e) => {
+    if (onKeyDown) onKeyDown(e)
+    if (!e.defaultPrevented && e.key === 'Enter') {
+      e.preventDefault()
+      const nextBtn = document.getElementById('next-step-btn')
+      if (nextBtn && !nextBtn.disabled) {
+        nextBtn.click()
+      }
+    }
+  }
+
   return (
     <input
       type={type}
@@ -132,6 +144,7 @@ function Input({ value, onChange, placeholder, type = 'text', disabled = false, 
       value={value || ''}
       placeholder={placeholder}
       onChange={e => onChange(e.target.value)}
+      onKeyDown={handleKeyDown}
     />
   )
 }
@@ -214,27 +227,27 @@ function SuggestionCard({ suggestion, onUse, onDiscard }) {
       initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 4 }}
-      className="bg-indigo-950/60 border border-indigo-500/30 rounded-xl p-3 text-xs space-y-2 mt-2 shadow-lg"
+      className="bg-[#FF5A1F]/10 border border-[#FF5A1F]/30 rounded-md p-3.5 text-xs space-y-2 mt-2 shadow-xs"
     >
-      <div className="flex items-center justify-between font-mono text-[10px] text-indigo-300 font-bold uppercase tracking-wider">
+      <div className="flex items-center justify-between font-mono text-[10px] text-[#FF5A1F] font-bold uppercase tracking-wider">
         <span>✦ AI Suggestion</span>
-        <span className="text-slate-400 font-normal">Fact-Checked Rewrite</span>
+        <span className="text-[#8A8A8F]">Fact-Checked Rewrite</span>
       </div>
-      <p className="text-slate-200 leading-relaxed font-sans bg-navy-900/80 p-2.5 rounded-lg border border-white/5">
+      <p className="text-[#F5F5F3] leading-relaxed font-sans bg-[#131316] p-3 rounded border border-[#26262B]">
         {suggestion}
       </p>
       <div className="flex items-center gap-2 pt-1">
         <button
           type="button"
           onClick={onUse}
-          className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition-colors shadow-glow-indigo"
+          className="px-3 py-1 bg-[#FF5A1F] hover:bg-[#C4430F] text-[#F5F5F3] rounded text-xs font-bold transition-colors shadow-xs active:scale-[0.98] uppercase tracking-wider"
         >
           Use This
         </button>
         <button
           type="button"
           onClick={onDiscard}
-          className="px-3 py-1 text-slate-400 hover:text-white text-xs transition-colors"
+          className="px-3 py-1 text-[#8A8A8F] hover:text-[#F5F5F3] text-xs transition-colors"
         >
           Discard
         </button>
@@ -858,27 +871,28 @@ export default function BuilderPage() {
         : MeridianPreview
 
   return (
-    <div className="min-h-screen flex flex-col relative">
-      <AnimatedGradientMesh />
+    <div className="min-h-screen flex flex-col relative bg-[#0A0A0B]">
       {/* Sub action bar */}
-      <div className="border-b border-white/5 bg-navy-800/40 backdrop-blur-sm sticky top-16 z-20">
+      <div className="border-b border-[#26262B] bg-[#0A0A0B] sticky top-16 z-20 shadow-xs">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-sm font-bold shadow-glow-indigo">
-              ✦
+            <div className="w-8 h-8 rounded bg-[#1B1B1F] border border-[#26262B] flex items-center justify-center text-[#FF5A1F] shadow-xs shrink-0" title="Document Layout Craft Engine">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+              </svg>
             </div>
             <div>
-              <h1 className="font-display text-lg font-bold text-white flex items-center gap-2">
-                Craft your <span className="text-gradient">standout resume</span>
+              <h1 className="font-display text-lg font-bold text-[#F5F5F3] flex items-center gap-2">
+                Craft your standout resume
               </h1>
-              <p className="text-xs text-slate-400 hidden sm:block">Build ATS-formatted, print-ready resumes with live A4 preview</p>
+              <p className="text-xs text-[#8A8A8F] hidden sm:block font-sans">Build ATS-formatted, print-ready resumes with live A4 preview</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             {importMsg && (
               <motion.span
                 initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                className="text-xs text-indigo-300 font-semibold"
+                className="text-xs text-[#FF5A1F] font-bold font-mono"
               >
                 {importMsg}
               </motion.span>
@@ -886,7 +900,7 @@ export default function BuilderPage() {
             {saveMsg && (
               <motion.span
                 initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                className={`text-xs ${saveMsg.includes('failed') ? 'text-rose-400' : 'text-emerald-400'}`}
+                className={`text-xs font-mono font-bold ${saveMsg.includes('failed') ? 'text-[#F04438]' : 'text-[#34C77B]'}`}
               >
                 {saveMsg}
               </motion.span>
@@ -903,12 +917,12 @@ export default function BuilderPage() {
             <button
               onClick={() => pdfInputRef.current?.click()}
               disabled={importingPdf}
-              className="btn-secondary text-sm py-2 px-3 text-indigo-300 border-indigo-500/30 hover:bg-indigo-500/10"
+              className="btn-secondary text-xs py-2 px-3 text-[#F5F5F3]"
               title="Upload a PDF resume to auto-fill builder form fields"
             >
               {importingPdf ? (
                 <>
-                  <svg className="w-4 h-4 animate-spin text-indigo-400" fill="none" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 animate-spin text-[#FF5A1F]" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
@@ -921,7 +935,7 @@ export default function BuilderPage() {
 
             <button
               onClick={handleImportFromAnalysis}
-              className="btn-secondary text-sm py-2 px-3 text-indigo-300 border-indigo-500/30 hover:bg-indigo-500/10"
+              className="btn-secondary text-xs py-2 px-3 text-[#F5F5F3]"
               title="Pre-fill skills and summary from your recent resume analysis session"
             >
               ✦ Import from Analysis
@@ -929,15 +943,15 @@ export default function BuilderPage() {
             <button
               onClick={() => persist(draft, resumeId)}
               disabled={saving}
-              className="btn-secondary text-sm py-2 px-4"
+              className="btn-secondary text-xs py-2 px-4"
             >
               {saving ? (
-                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 animate-spin text-[#FF5A1F]" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
               ) : (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-4 h-4 text-[#8A8A8F]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 16v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2M7 8l5-5 5 5M12 3v13" />
                 </svg>
               )}
@@ -947,7 +961,7 @@ export default function BuilderPage() {
               id="export-pdf-btn"
               onClick={exportPdf}
               disabled={exporting}
-              className="btn-primary text-sm py-2 px-4"
+              className="btn-primary text-xs py-2 px-4 shadow-sm uppercase font-bold"
             >
               {exporting ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -970,16 +984,16 @@ export default function BuilderPage() {
         {/* ── LEFT: Form ─────────────────────────────────────────────────── */}
         <div className="w-full lg:w-[46%] xl:w-[44%] space-y-4 overflow-y-auto lg:max-h-[calc(100vh-140px)] lg:pr-2 pb-10">
 
-          {/* Template selector + Muted Accent Color Picker */}
-          <div className="glass-card p-5">
+          {/* Template selector + Accent Color Picker */}
+          <div className="bg-[#131316] border border-[#26262B] p-5 shadow-xs rounded-lg">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display text-sm font-bold uppercase tracking-widest text-indigo-400">
-                Choose Template
+              <h2 className="font-mono text-xs font-bold uppercase tracking-widest text-[#FF5A1F] flex items-center gap-2">
+                <span>✦</span> CHOOSE TEMPLATE
               </h2>
 
               {/* Accent Color Picker */}
-              <div className="flex items-center gap-1.5 bg-navy-900/60 border border-white/5 px-2.5 py-1 rounded-full">
-                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-mono mr-1">Accent</span>
+              <div className="flex items-center gap-1.5 bg-[#1B1B1F] border border-[#26262B] px-2.5 py-1 rounded-full">
+                <span className="text-[10px] text-[#8A8A8F] uppercase tracking-wider font-mono mr-1 font-bold">Accent</span>
                 {ACCENT_COLORS.map(c => (
                   <button
                     key={c.id}
@@ -987,7 +1001,7 @@ export default function BuilderPage() {
                     onClick={() => update({ accentColor: c.hex })}
                     className={`w-4 h-4 rounded-full transition-transform ${
                       (draft.accentColor || TEMPLATES.find(t => t.id === draft.templateId)?.accent) === c.hex
-                        ? 'scale-125 ring-2 ring-white/60 shadow-glow-indigo'
+                        ? 'scale-125 ring-2 ring-[#FF5A1F] shadow-xs'
                         : 'hover:scale-110 opacity-70 hover:opacity-100'
                     }`}
                     style={{ backgroundColor: c.hex }}
@@ -1005,15 +1019,14 @@ export default function BuilderPage() {
                     key={t.id}
                     id={`template-${t.id}`}
                     onClick={() => update({ templateId: t.id })}
-                    className={draft.templateId === t.id ? 'template-card-active' : 'template-card border-white/5'}
+                    className={draft.templateId === t.id ? 'template-card-active' : 'template-card border-[#26262B] bg-[#1B1B1F] hover:bg-[#212126]'}
                   >
                     {/* Mini colour swatch */}
-                    <div className="w-full h-10 rounded-lg mb-2 overflow-hidden flex items-center justify-center"
-                         style={{ background: `${activeAccent}15`, border: `1px solid ${activeAccent}30` }}>
+                    <div className="w-full h-10 rounded mb-2 overflow-hidden flex items-center justify-center bg-[#131316] border border-[#26262B]">
                       <span style={{ width: draft.templateId === t.id ? 32 : 20, height: 4, borderRadius: 2, background: activeAccent, transition: 'width 0.3s' }} />
                     </div>
-                    <div className="font-display font-bold text-white text-xs text-center">{t.name}</div>
-                    <div className="text-slate-500 text-[11px] text-center mt-0.5 leading-tight hidden sm:block">{t.desc}</div>
+                    <div className="font-display font-bold text-[#F5F5F3] text-xs text-center">{t.name}</div>
+                    <div className="text-[#8A8A8F] text-[11px] text-center mt-0.5 leading-tight hidden sm:block">{t.desc}</div>
                   </button>
                 )
               })}
@@ -1021,7 +1034,7 @@ export default function BuilderPage() {
           </div>
 
           {/* Active Wizard Step Form Container */}
-          <div className="glass-card p-6 min-h-[380px] flex flex-col justify-between">
+          <div className="bg-[#131316] border border-[#26262B] border-t-2 border-t-[#FF5A1F] p-6 min-h-[380px] flex flex-col justify-between shadow-xs rounded-lg">
             {activeStep === 0 && (
               <div className="space-y-4 animate-fade-in">
                 <div className="flex items-center gap-2 border-b border-white/5 pb-3">
@@ -1275,6 +1288,16 @@ export default function BuilderPage() {
                     readOnly={summaryLoading}
                     placeholder="Concise snapshot of your background, expertise, and career goal…"
                     onChange={e => update({ summary: e.target.value })}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        if (e.shiftKey) return
+                        e.preventDefault()
+                        const nextBtn = document.getElementById('next-step-btn')
+                        if (nextBtn && !nextBtn.disabled) {
+                          nextBtn.click()
+                        }
+                      }
+                    }}
                   />
                   {summaryError && (
                     <div className="text-[11px] text-rose-400 font-medium mt-1.5 animate-fade-in">
@@ -1296,7 +1319,7 @@ export default function BuilderPage() {
             )}
 
             {/* Bottom Wizard Navigation Footer */}
-            <div className="flex items-center justify-between pt-4 mt-6 border-t border-white/5">
+            <div className="flex items-center justify-between pt-4 mt-6 border-t border-[#26262B]">
               <button
                 id="prev-step-btn"
                 onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
@@ -1305,14 +1328,14 @@ export default function BuilderPage() {
               >
                 ← Previous Step
               </button>
-              <span className="text-xs text-slate-400 font-mono font-semibold">
-                Step {activeStep + 1} of {STEPS.length}: <span className="text-indigo-400 font-bold">{STEPS[activeStep].title}</span>
+              <span className="text-xs text-[#8A8A8F] font-mono font-medium">
+                Step {activeStep + 1} of {STEPS.length}: <span className="text-[#FF5A1F] font-bold">{STEPS[activeStep].title}</span>
               </span>
               <button
                 id="next-step-btn"
                 onClick={() => setActiveStep(prev => Math.min(STEPS.length - 1, prev + 1))}
                 disabled={activeStep === STEPS.length - 1}
-                className="btn-primary text-xs py-2 px-4"
+                className="btn-primary text-xs py-2 px-4 shadow-sm uppercase font-bold"
               >
                 Next Step →
               </button>
@@ -1323,17 +1346,17 @@ export default function BuilderPage() {
         {/* ── RIGHT: Live Preview ─────────────────────────────────────────── */}
         <div className="w-full lg:w-[54%] xl:w-[56%] lg:sticky lg:top-24 flex flex-col gap-3">
           <div className="flex items-center justify-between px-1">
-            <span className="text-xs text-slate-500 uppercase tracking-widest font-semibold flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs text-[#8A8A8F] uppercase tracking-widest font-mono font-bold flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#FF5A1F] animate-ping" />
               Live Preview — A4
             </span>
-            <span className="text-xs text-slate-400">
-              Template: <span className="text-indigo-400 font-bold">{TEMPLATES.find(t => t.id === draft.templateId)?.name}</span>
+            <span className="text-xs text-[#8A8A8F] font-mono font-medium">
+              Template: <span className="text-[#FF5A1F] font-bold">{TEMPLATES.find(t => t.id === draft.templateId)?.name}</span>
             </span>
           </div>
 
           {/* Scrollable A4 Canvas Viewport Frame */}
-          <div className="glass-card p-3 rounded-2xl overflow-y-auto max-h-[calc(100vh-170px)] border border-white/10 shadow-2xl">
+          <div className="bg-[#131316] p-3 rounded-lg overflow-y-auto max-h-[calc(100vh-170px)] border border-[#26262B] shadow-md">
             <div
               className="relative mx-auto overflow-hidden rounded-lg bg-white shadow-card transition-all duration-300"
               style={{
