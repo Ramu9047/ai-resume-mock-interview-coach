@@ -16,11 +16,11 @@ import {
 } from '../api/client'
 
 // ── Colours matching the design system ───────────────────────────────────────
-const INDIGO  = '#6366F1'
-const EMERALD = '#10B981'
-const AMBER   = '#F59E0B'
-const ROSE    = '#FB7185'
-const SLATE   = '#475569'
+const INDIGO  = '#FF5A1F'
+const EMERALD = '#34C77B'
+const AMBER   = '#F5A623'
+const ROSE    = '#F04438'
+const SLATE   = '#8A8A8F'
 
 const CHART_STYLE = {
   background: 'transparent',
@@ -29,11 +29,12 @@ const CHART_STYLE = {
 }
 
 const TOOLTIP_STYLE = {
-  backgroundColor: '#0F1629',
-  border: '1px solid rgba(255,255,255,0.08)',
-  borderRadius: 10,
-  color: '#E2E8F0',
+  backgroundColor: '#131316',
+  border: '1px solid #26262B',
+  borderRadius: 6,
+  color: '#F5F5F3',
   fontSize: 12,
+  boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
 }
 
 // ── Bar gradient for top gaps ─────────────────────────────────────────────────

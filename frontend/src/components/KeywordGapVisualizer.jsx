@@ -77,21 +77,28 @@ export default function KeywordGapVisualizer({ gaps = [], jdKeywords = [], resum
   // ── Fallback: plain pill list ──────────────────────────────────────────────
   if (!hasFrequencyData) {
     return (
-      <div className="glass-card p-5 hover:shadow-glow-rose transition-all duration-300">
-        <h3 className="font-display text-sm font-semibold uppercase tracking-widest mb-4 flex items-center gap-2 text-rose-400">
-          <span>◈</span>
-          Gaps to Address
-          <span className="ml-auto text-xs font-mono opacity-60">{gaps.length}</span>
-        </h3>
-        <ul className="space-y-2">
+      <div className="glass-card p-6 border-l-4 border-l-rose-600 rounded-tr-3xl rounded-bl-3xl rounded-tl-md rounded-br-md bg-white shadow-sm border border-slate-200">
+        <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+          <h3 className="font-mono text-xs font-bold uppercase tracking-widest flex items-center gap-2 text-rose-700">
+            <span>◈</span>
+            GAPS TO ADDRESS
+          </h3>
+          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700">
+            {gaps.length}
+          </span>
+        </div>
+        <ul className="space-y-2.5">
           {gaps.map((item, i) => (
-            <li
+            <motion.li
               key={i}
-              className="flex items-start gap-2.5 border rounded-xl px-3 py-2.5 text-sm leading-relaxed bg-rose-500/10 border-rose-500/25 text-rose-300"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: i * 0.05 }}
+              className="flex items-start gap-3 border rounded-xl px-3.5 py-3 text-sm leading-relaxed bg-rose-50/80 border-rose-200/90 text-rose-900 hover:-translate-x-0.5 transition-transform duration-150"
             >
-              <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 bg-rose-400" />
+              <span className="mt-2 w-1.5 h-1.5 rounded-full shrink-0 bg-rose-500" />
               {item}
-            </li>
+            </motion.li>
           ))}
         </ul>
       </div>
@@ -121,57 +128,56 @@ export default function KeywordGapVisualizer({ gaps = [], jdKeywords = [], resum
     : 0
 
   return (
-    <div className="glass-card p-5 hover:shadow-glow-rose transition-all duration-300 relative space-y-5">
+    <div className="bg-[#131316] border border-[#26262B] border-l-4 border-l-[#F04438] rounded-lg p-6 shadow-[0_4px_12px_rgba(0,0,0,0.4)] relative space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="font-display text-sm font-semibold uppercase tracking-widest flex items-center gap-2 text-rose-400">
+      <div className="flex items-center justify-between border-b border-[#26262B] pb-3">
+        <h3 className="font-mono text-xs font-bold uppercase tracking-widest flex items-center gap-2 text-[#F04438]">
           <span>◈</span>
-          Keyword Gap &amp; Overlap Visualizer
+          KEYWORD GAP & OVERLAP VISUALIZER
         </h3>
-        <div className="flex items-center gap-3 text-xs text-slate-500">
+        <div className="flex items-center gap-3 text-[11px] font-mono text-[#8A8A8F]">
           <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-rose-400 inline-block" /> High (≥4×)
+            <span className="w-2 h-2 rounded-full bg-[#F04438] inline-block" /> High (≥4×)
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" /> Mid (2-3×)
+            <span className="w-2 h-2 rounded-full bg-[#F5A623] inline-block" /> Mid (2-3×)
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-slate-500 inline-block" /> Low (1×)
+            <span className="w-2 h-2 rounded-full bg-[#8A8A8F] inline-block" /> Low (1×)
           </span>
-          <span className="font-mono opacity-60">{gaps.length}</span>
         </div>
       </div>
 
       {/* Horizontal Overlap Comparison Bar */}
       {totalJdKeywords > 0 && (
-        <div className="bg-navy-900/80 border border-white/5 rounded-xl p-4 space-y-2">
+        <div className="bg-[#1B1B1F] border border-[#26262B] rounded-md p-4 space-y-2">
           <div className="flex items-center justify-between text-xs font-semibold">
-            <span className="text-slate-300 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <span className="text-[#F5F5F3] flex items-center gap-1.5 font-bold">
+              <span className="w-2 h-2 rounded-full bg-[#FF5A1F]" />
               Keyword Overlap Match
             </span>
-            <span className="font-mono text-emerald-400">
+            <span className="font-mono text-[#FF5A1F] font-bold">
               {matchedKeywords.length} / {totalJdKeywords} keywords matched ({overlapPercentage}%)
             </span>
           </div>
 
           {/* Dual Progress Bar */}
-          <div className="w-full h-3 bg-navy-950 rounded-full overflow-hidden flex border border-white/5">
+          <div className="w-full h-2.5 bg-[#0A0A0B] rounded-full overflow-hidden flex border border-[#26262B]">
             <motion.div
-              className="h-full bg-emerald-500 shadow-glow-emerald"
+              className="h-full bg-[#FF5A1F]"
               initial={{ width: '0%' }}
               animate={{ width: `${overlapPercentage}%` }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
             />
             <motion.div
-              className="h-full bg-rose-500/40"
+              className="h-full bg-[#F04438]/30"
               initial={{ width: '0%' }}
               animate={{ width: `${100 - overlapPercentage}%` }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
             />
           </div>
 
-          <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+          <div className="flex items-center justify-between text-[11px] text-[#8A8A8F] pt-1 font-mono font-medium">
             <span>In Resume ({matchedKeywords.length})</span>
             <span>Missing in Resume ({totalJdKeywords - matchedKeywords.length})</span>
           </div>

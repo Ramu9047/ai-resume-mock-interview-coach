@@ -1,41 +1,34 @@
-import { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
 
 /**
- * Animated horizontal score bar (0–10).
- * @param {number}  score
- * @param {boolean} animate - whether to play fill animation on mount
+ * Score bar visualization for Precision Dark Linear Theme.
  */
-export default function ScoreBar({ score = 0, animate = true }) {
-  const [width, setWidth] = useState(0)
-  const pct = Math.min(Math.max((score / 10) * 100, 0), 100)
+export default function ScoreBar({ score = 0, max = 10, animate = true }) {
+  const pct = Math.min(100, Math.max(0, (score / max) * 100))
 
-  const colour =
-    score >= 7 ? 'from-emerald-500 to-emerald-400' :
-    score >= 4 ? 'from-amber-500 to-amber-400' :
-                 'from-rose-500 to-rose-400'
-
-  const textColour =
-    score >= 7 ? 'text-emerald-400' :
-    score >= 4 ? 'text-amber-400' :
-                 'text-rose-400'
-
-  useEffect(() => {
-    if (!animate) { setWidth(pct); return }
-    const t = setTimeout(() => setWidth(pct), 100)
-    return () => clearTimeout(t)
-  }, [pct, animate])
+  const fillColour =
+    score >= 7.5 ? 'bg-[#FF5A1F]' :
+    score >= 5.0 ? 'bg-[#F5A623]' : 'bg-[#F04438]'
 
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex-1 h-2 bg-navy-700 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full bg-gradient-to-r ${colour} transition-all duration-700 ease-out`}
-          style={{ width: `${width}%` }}
-        />
+    <div className="w-full space-y-1">
+      <div className="w-full h-2 bg-[#1B1B1F] border border-[#26262B] rounded-full overflow-hidden flex">
+        {animate ? (
+          <motion.div
+            className={`h-full ${fillColour}`}
+            initial={{ width: '0%' }}
+            animate={{ width: `${pct}%` }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+          />
+        ) : (
+          <div className={`h-full ${fillColour}`} style={{ width: `${pct}%` }} />
+        )}
       </div>
-      <span className={`font-display text-sm font-bold w-12 text-right ${textColour}`}>
-        {score}<span className="text-slate-500 font-normal text-xs">/10</span>
-      </span>
+      <div className="flex justify-between text-[10px] text-[#8A8A8F] font-mono font-medium">
+        <span>0</span>
+        <span className="font-bold text-[#F5F5F3]">{score.toFixed(1)} / {max}</span>
+        <span>{max}</span>
+      </div>
     </div>
   )
 }

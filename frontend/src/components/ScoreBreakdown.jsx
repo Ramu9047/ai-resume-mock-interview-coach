@@ -1,10 +1,7 @@
 import { motion } from 'framer-motion'
-import CircularProgress from './CircularProgress'
 
 /**
- * Score Breakdown component displaying individual sub-scores
- * (Formatting, Keyword Match, Experience Relevance, Skills Alignment)
- * alongside the overall ATS score using mini circular progress rings.
+ * Sub-Score Breakdown Matrix component for Precision Dark Linear Theme.
  */
 export default function ScoreBreakdown({
   formattingScore,
@@ -26,19 +23,18 @@ export default function ScoreBreakdown({
   ]
 
   function getScoreBadge(val) {
-    if (val >= 75) return { label: 'Strong', border: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400' }
-    if (val >= 50) return { label: 'Moderate', border: 'border-amber-500/20 bg-amber-500/10 text-amber-400' }
-    return { label: 'Needs Work', border: 'border-rose-500/20 bg-rose-500/10 text-rose-400' }
+    if (val >= 75) return { label: 'Strong', border: 'border-[#FF5A1F]/30 bg-[#FF5A1F]/10 text-[#FF5A1F]' }
+    if (val >= 50) return { label: 'Moderate', border: 'border-[#F5A623]/30 bg-[#F5A623]/10 text-[#F5A623]' }
+    return { label: 'Needs Work', border: 'border-[#F04438]/30 bg-[#F04438]/10 text-[#F04438]' }
   }
 
   return (
-    <div className="glass-card p-5 h-full flex flex-col justify-between hover:shadow-card-hover transition-all duration-300">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-display text-xs font-semibold uppercase tracking-widest text-indigo-400 flex items-center gap-2">
-          <span>📊</span>
-          Sub-Score Breakdown
+    <div className="bg-[#131316] border border-[#26262B] p-6 h-full flex flex-col justify-between rounded-lg border-t-2 border-t-[#FF5A1F] shadow-[0_4px_12px_rgba(0,0,0,0.4)]">
+      <div className="flex items-center justify-between mb-4 border-b border-[#26262B] pb-3">
+        <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-[#FF5A1F] flex items-center gap-2">
+          <span>✦ SIGNAL BREAKDOWN MATRIX</span>
         </h3>
-        <span className="text-[11px] text-slate-400 font-mono">0–100 Scale</span>
+        <span className="text-[11px] text-[#8A8A8F] font-mono font-medium">0–100 Scale</span>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -47,34 +43,38 @@ export default function ScoreBreakdown({
             return (
               <div
                 key={item.label}
-                className="bg-navy-900/60 border border-white/5 rounded-xl p-3 flex flex-col items-center justify-between text-center animate-pulse"
+                className="bg-[#1B1B1F] border border-[#26262B] rounded-md p-3.5 flex flex-col items-center justify-between text-center animate-pulse"
               >
-                <div className="h-3.5 w-16 bg-navy-800 rounded mb-2" />
-                <div className="w-[68px] h-[68px] rounded-full bg-navy-800/80 border border-white/5 my-1" />
-                <div className="h-4 w-12 bg-navy-800 rounded mt-2" />
+                <div className="h-3.5 w-16 bg-[#26262B] rounded mb-2" />
+                <div className="w-12 h-10 bg-[#26262B] rounded my-2" />
+                <div className="h-4 w-12 bg-[#26262B] rounded mt-2" />
               </div>
             )
           }
 
           const badge = getScoreBadge(item.score)
           return (
-            <div
+            <motion.div
               key={item.label}
-              className="bg-navy-900/60 border border-white/5 rounded-xl p-3 flex flex-col items-center justify-between text-center group hover:border-indigo-500/30 transition-all duration-200"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, delay: idx * 0.04 }}
+              className="bg-[#1B1B1F] border border-[#26262B] rounded-md p-3.5 flex flex-col items-center justify-between text-center group hover:border-[#3D3D42] transition-all duration-150 shadow-xs"
             >
-              <div className="flex items-center gap-1.5 mb-1.5 text-xs font-semibold text-slate-200">
+              <div className="flex items-center gap-1.5 mb-2 text-xs font-bold text-[#F5F5F3]">
                 <span>{item.icon}</span>
                 <span className="truncate">{item.label}</span>
               </div>
 
-              <div className="my-1">
-                <CircularProgress score={item.score} size={68} stroke={6} label="" />
+              {/* Sub-score JetBrains Mono Score */}
+              <div className="font-mono text-2xl font-bold text-[#F5F5F3] my-1">
+                {item.score}<span className="text-xs text-[#8A8A8F] font-normal">/100</span>
               </div>
 
-              <span className={`mt-2 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium border ${badge.border}`}>
+              <span className={`mt-2 px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider border ${badge.border}`}>
                 {badge.label}
               </span>
-            </div>
+            </motion.div>
           )
         })}
       </div>
