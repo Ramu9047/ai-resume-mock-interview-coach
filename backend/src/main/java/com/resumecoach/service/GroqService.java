@@ -66,7 +66,7 @@ public class GroqService {
         try {
             return executeChat(this.model, systemPrompt, userMessage, isJson);
         } catch (GroqApiException e) {
-            String fallbackModel = "openai/gpt-oss-20b";
+            String fallbackModel = "llama-3.1-8b-instant";
             if (!fallbackModel.equalsIgnoreCase(this.model)) {
                 log.warn("[GROQ FALLBACK] Primary model '{}' failed ({}), retrying with '{}'...", this.model, e.getMessage(), fallbackModel);
                 try {
