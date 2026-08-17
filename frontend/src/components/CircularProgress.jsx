@@ -14,12 +14,14 @@ import { motion } from 'framer-motion'
 export default function CircularProgress({
   score = 0,
   subScores = null,
+  customBars = null,
+  scaleMax = 100,
   label = 'ATS MATCH RATING',
   showSublabel = true,
 }) {
   const [displayed, setDisplayed] = useState(0)
 
-  const bars = [
+  const bars = customBars || [
     { key: 'Formatting', score: subScores?.formattingScore ?? Math.min(100, Math.max(40, score + 4)) },
     { key: 'Keywords', score: subScores?.keywordMatchScore ?? Math.min(100, Math.max(30, score - 6)) },
     { key: 'Experience', score: subScores?.experienceRelevanceScore ?? Math.min(100, Math.max(45, score + 2)) },
@@ -35,12 +37,18 @@ export default function CircularProgress({
       if (!start) start = timestamp
       const progress = Math.min((timestamp - start) / duration, 1)
       const eased = 1 - Math.pow(1 - progress, 3) // Cubic ease out
-      setDisplayed(Math.round(eased * score))
+      if (scaleMax === 10) {
+        setDisplayed(Math.round(eased * score * 10) / 10)
+      } else {
+        setDisplayed(Math.round(eased * score))
+      }
       if (progress < 1) animId = requestAnimationFrame(step)
     }
     animId = requestAnimationFrame(step)
     return () => { if (animId) cancelAnimationFrame(animId) }
-  }, [score])
+  }, [score, scaleMax])
+
+  const normScore = scaleMax === 10 ? score * 10 : score
 
   const getBarColor = (val) => {
     if (val >= 75) return 'bg-[#FF5A1F]' // Ignite
@@ -55,9 +63,9 @@ export default function CircularProgress({
   }
 
   const ratingLabel =
-    score >= 75 ? 'Strong Match' :
-    score >= 50 ? 'Moderate Match' :
-                  'Needs Work'
+    normScore >= 75 ? 'Strong Match' :
+    normScore >= 50 ? 'Moderate Match' :
+                      'Needs Work'
 
   return (
     <div className="flex flex-col items-center justify-center p-2 space-y-4 w-full">
@@ -67,11 +75,11 @@ export default function CircularProgress({
         {/* Count-up Score Numeral in JetBrains Mono */}
         <div className="flex flex-col items-start justify-end">
           <div className="flex items-baseline font-mono text-5xl sm:text-6xl font-bold text-[#F5F5F3] tracking-tight">
-            {displayed}
-            <span className="text-lg text-[#8A8A8F] font-normal ml-1">/100</span>
+            {scaleMax === 10 ? displayed.toFixed(1) : displayed}
+            <span className="text-lg text-[#8A8A8F] font-normal ml-1">/{scaleMax}</span>
           </div>
           {showSublabel && (
-            <span className={`text-[11px] font-mono font-bold uppercase tracking-wider mt-1.5 ${getTextColor(score)}`}>
+            <span className={`text-[11px] font-mono font-bold uppercase tracking-wider mt-1.5 ${getTextColor(normScore)}`}>
               ✦ {ratingLabel}
             </span>
           )}

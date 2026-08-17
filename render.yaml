@@ -18,5 +18,5 @@ services:
       - key: ADMIN_ANALYTICS_SECRET
         generateValue: true
       - key: ALLOWED_ORIGINS
-        sync: false # Set to your Vercel frontend URL e.g. https://your-app.vercel.app
+        sync: false # Set to your Vercel frontend URL: https://ai-resume-mock-interview-coach.vercel.app
 

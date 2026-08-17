@@ -23,8 +23,12 @@ export default function UploadPage() {
       navigate(`/feedback/${data.sessionId}`, { state: data })
     } catch (err) {
       console.error('Resume Analysis Error:', err)
-      const detail = err?.response?.data?.detail ?? err?.response?.data?.message
-      setError(detail || "We couldn't analyze your resume right now. Please try again in a moment.")
+      const detail = err?.response?.data?.detail || err?.response?.data?.message || err?.message
+      if (err?.code === 'ERR_NETWORK' || !err?.response) {
+        setError('Network Error: Unable to reach the backend server. Please verify VITE_API_BASE_URL and CORS settings.')
+      } else {
+        setError(detail || "We couldn't analyze your resume right now. Please try again in a moment.")
+      }
       setLoading(false)
     }
   }

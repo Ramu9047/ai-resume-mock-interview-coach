@@ -129,7 +129,7 @@ docker push <your-dockerhub-username>/resume-coach-frontend:latest
    - `GROQ_API_KEY`: Your Groq API key from console.groq.com
    - `MONGODB_URI`: Your MongoDB Atlas URI (e.g. `mongodb+srv://user:pass@cluster.mongodb.net/resume_coach`)
    - `ADMIN_ANALYTICS_SECRET`: Secret key for Admin Analytics dashboard
-   - `ALLOWED_ORIGINS`: `https://your-app.vercel.app`
+   - `ALLOWED_ORIGINS`: `https://ai-resume-mock-interview-coach.vercel.app`
 5. Click **Deploy Web Service**. Render will expose a public backend URL (e.g., `https://resume-coach-backend.onrender.com`).
 
 #### B. Frontend Deployment (Vercel)

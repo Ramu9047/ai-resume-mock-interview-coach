@@ -697,7 +697,8 @@ export default function BuilderPage() {
       }
     } catch (err) {
       console.error(err)
-      alert('Failed to parse PDF. Please ensure the file is a valid PDF resume.')
+      const detail = err?.response?.data?.detail || err?.response?.data?.message || err?.message
+      alert(`Failed to parse PDF: ${detail || 'Please ensure the file is a valid PDF resume.'}`)
     } finally {
       setImportingPdf(false)
       if (pdfInputRef.current) pdfInputRef.current.value = ''

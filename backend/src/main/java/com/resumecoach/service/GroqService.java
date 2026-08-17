@@ -63,10 +63,27 @@ public class GroqService {
      * Calls Groq with optional JSON response format enforcement.
      */
     public String chat(String systemPrompt, String userMessage, boolean isJson) {
+        try {
+            return executeChat(this.model, systemPrompt, userMessage, isJson);
+        } catch (GroqApiException e) {
+            String fallbackModel = "openai/gpt-oss-20b";
+            if (!fallbackModel.equalsIgnoreCase(this.model)) {
+                log.warn("[GROQ FALLBACK] Primary model '{}' failed ({}), retrying with '{}'...", this.model, e.getMessage(), fallbackModel);
+                try {
+                    return executeChat(fallbackModel, systemPrompt, userMessage, isJson);
+                } catch (Exception fallbackErr) {
+                    log.error("[GROQ FALLBACK FAILED] Fallback model also failed: {}", fallbackErr.getMessage());
+                }
+            }
+            throw e;
+        }
+    }
+
+    private String executeChat(String targetModel, String systemPrompt, String userMessage, boolean isJson) {
         Map<String, Object> requestBody;
         if (isJson) {
             requestBody = Map.of(
-                "model", model,
+                "model", targetModel,
                 "messages", List.of(
                     Map.of("role", "system", "content", systemPrompt),
                     Map.of("role", "user",   "content", userMessage)
@@ -77,7 +94,7 @@ public class GroqService {
             );
         } else {
             requestBody = Map.of(
-                "model", model,
+                "model", targetModel,
                 "messages", List.of(
                     Map.of("role", "system", "content", systemPrompt),
                     Map.of("role", "user",   "content", userMessage)
@@ -88,7 +105,7 @@ public class GroqService {
         }
 
         long startTime = System.currentTimeMillis();
-        log.info("Calling Groq model={} isJson={}...", model, isJson);
+        log.info("Calling Groq model={} isJson={}...", targetModel, isJson);
 
         String responseBody = restClient.post()
             .uri("/chat/completions")
@@ -104,7 +121,7 @@ public class GroqService {
             .body(String.class);
 
         long duration = System.currentTimeMillis() - startTime;
-        log.info("Groq API responded in {} ms (model={})", duration, model);
+        log.info("Groq API responded in {} ms (model={})", duration, targetModel);
 
         return extractContent(responseBody);
     }

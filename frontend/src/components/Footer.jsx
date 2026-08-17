@@ -8,14 +8,18 @@ export default function Footer() {
   const [howItWorksOpen, setHowItWorksOpen] = useState(false)
   const [activeLegalModal, setActiveLegalModal] = useState(null) // 'privacy' | 'terms' | null
 
-  // Hide footer on unlisted internal admin page
-  if (location.pathname.includes('/admin')) {
+  // Hide footer on focused workspace pages (Builder, Interview, Admin)
+  if (
+    location.pathname.includes('/admin') ||
+    location.pathname.includes('/builder') ||
+    location.pathname.includes('/interview')
+  ) {
     return null
   }
 
   return (
     <>
-      <footer className="w-full bg-[#070708] border-t border-[#26262B] text-[#8A8A8F] pt-12 pb-8 px-4 sm:px-6 lg:px-8 mt-auto relative z-10">
+      <footer className="w-full bg-[#070708] border-t border-[#26262B] text-[#8A8A8F] pt-12 pb-8 px-4 sm:px-6 lg:px-8 mt-auto relative z-10 print:hidden">
         <div className="max-w-7xl mx-auto">
           {/* Main 4-column layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-[#1F1F24]">

@@ -11,7 +11,7 @@ import java.io.IOException;
 @Service
 public class PdfService {
 
-    private static final int MAX_TEXT_LENGTH = 12_000; // ~3k tokens — keep prompt manageable
+    private static final int MAX_TEXT_LENGTH = 8_000; // ~2k tokens — optimize prompt size for Groq TPM limits
 
     /**
      * Extracts plain text from an uploaded PDF file.

@@ -27,7 +27,8 @@ public class CorsConfig {
                         "http://localhost:5173",
                         "http://127.0.0.1:5173",
                         "http://localhost:4173",
-                        "http://127.0.0.1:4173"
+                        "http://127.0.0.1:4173",
+                        "https://ai-resume-mock-interview-coach.vercel.app"
                 ));
 
                 if (StringUtils.hasText(allowedOrigins)) {
@@ -39,7 +40,7 @@ public class CorsConfig {
 
                 registry.addMapping("/api/**")
                         .allowedOrigins(origins.toArray(new String[0]))
-                        .allowedOriginPatterns("http://localhost:*", "http://127.0.0.1:*", "https://*.vercel.app")
+                        .allowedOriginPatterns("http://localhost:*", "http://127.0.0.1:*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(false)

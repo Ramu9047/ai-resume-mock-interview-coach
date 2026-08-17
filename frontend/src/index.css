@@ -231,3 +231,72 @@
   opacity: 1;
   animation: pageFadeIn 0.2s ease-out;
 }
+
+/* ── Clean Print Report Styles ────────────────────────────────────────────── */
+@media print {
+  @page {
+    margin: 10mm 12mm;
+    size: A4 portrait;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  .print\:hidden,
+  header,
+  footer {
+    display: none !important;
+  }
+
+  .page-enter,
+  .page-wrapper {
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Force all cards to crisp white with light borders */
+  .glass-card,
+  div[class*="bg-[#"] {
+    background-color: #ffffff !important;
+    border-color: #e5e7eb !important;
+    box-shadow: none !important;
+  }
+
+  /* Force ALL text elements to dark readable ink */
+  h1, h2, h3, h4, h5, h6, p, span, div, strong, label {
+    color: #111827 !important;
+    text-shadow: none !important;
+  }
+
+  .text-\[\#8A8A8F\],
+  .text-\[\#F5F5F3\],
+  .text-white {
+    color: #111827 !important;
+  }
+
+  /* Submitted Answer box */
+  p.bg-\[\#131316\],
+  div.bg-\[\#131316\] {
+    background-color: #f9fafb !important;
+    border: 1px solid #e5e7eb !important;
+    color: #111827 !important;
+  }
+
+  /* Badges */
+  .badge-technical,
+  .badge-behavioral,
+  .badge-role-fit {
+    background-color: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
+    color: #1f2937 !important;
+  }
+
+  .animate-slide-up,
+  .animate-fade-in {
+    animation: none !important;
+  }
+}
