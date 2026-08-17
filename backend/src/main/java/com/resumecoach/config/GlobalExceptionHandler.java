@@ -56,9 +56,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(GroqService.GroqApiException.class)
     public ProblemDetail handleGroqError(GroqService.GroqApiException ex) {
         log.error("Groq API error: {}", ex.getMessage());
+        String detail = ex.getMessage() != null && !ex.getMessage().isBlank()
+                ? ex.getMessage()
+                : "The AI service is temporarily unavailable. Please try again in a moment.";
         return ProblemDetail.forStatusAndDetail(
             HttpStatus.SERVICE_UNAVAILABLE,
-            "The AI service is temporarily unavailable. Please try again in a moment."
+            detail
         );
     }
 

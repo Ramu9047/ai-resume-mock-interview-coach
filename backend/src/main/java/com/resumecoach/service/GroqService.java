@@ -28,22 +28,24 @@ public class GroqService {
     private final RestClient restClient;
     private final String model;
     private final ObjectMapper objectMapper;
+    private final String apiKey;
 
     public GroqService(
             @Value("${groq.api.key}") String apiKey,
             @Value("${groq.api.base-url}") String baseUrl,
             @Value("${groq.model}") String model,
             ObjectMapper objectMapper) {
+        this.apiKey = apiKey != null ? apiKey.trim() : "";
         this.model = model;
         this.objectMapper = objectMapper;
         log.info("[GROQ DIAGNOSTIC] GroqService initialized: apiKey isBlank={} length={} keyPrefix='{}' baseUrl={} model={}",
-            apiKey == null || apiKey.isBlank(),
-            apiKey != null ? apiKey.length() : 0,
-            apiKey != null && apiKey.length() > 6 ? apiKey.substring(0, 6) + "..." : apiKey,
+            this.apiKey.isBlank(),
+            this.apiKey.length(),
+            this.apiKey.length() > 6 ? this.apiKey.substring(0, 6) + "..." : this.apiKey,
             baseUrl, model);
         this.restClient = RestClient.builder()
             .baseUrl(baseUrl)
-            .defaultHeader("Authorization", "Bearer " + apiKey)
+            .defaultHeader("Authorization", "Bearer " + this.apiKey)
             .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
             .build();
     }
@@ -66,7 +68,7 @@ public class GroqService {
         try {
             return executeChat(this.model, systemPrompt, userMessage, isJson);
         } catch (GroqApiException e) {
-            String fallbackModel = "llama-3.1-8b-instant";
+            String fallbackModel = "llama3-8b-8192";
             if (!fallbackModel.equalsIgnoreCase(this.model)) {
                 log.warn("[GROQ FALLBACK] Primary model '{}' failed ({}), retrying with '{}'...", this.model, e.getMessage(), fallbackModel);
                 try {
@@ -80,6 +82,11 @@ public class GroqService {
     }
 
     private String executeChat(String targetModel, String systemPrompt, String userMessage, boolean isJson) {
+        if (this.apiKey.isBlank()) {
+            log.error("[GROQ ERROR] GROQ_API_KEY environment variable is not configured or is blank on backend server!");
+            throw new GroqApiException("GROQ_API_KEY environment variable is missing or blank on Render server.");
+        }
+
         Map<String, Object> requestBody;
         if (isJson) {
             requestBody = Map.of(
@@ -114,6 +121,9 @@ public class GroqService {
             .onStatus(HttpStatusCode::isError, (req, res) -> {
                 String body = new String(res.getBody().readAllBytes());
                 log.error("Groq API error status={} body={}", res.getStatusCode(), body);
+                if (res.getStatusCode().value() == 401) {
+                    throw new GroqApiException("GROQ_API_KEY is invalid or unauthorized (401). Please check your key in Render environment variables.");
+                }
                 throw new GroqApiException(
                     "Groq API returned " + res.getStatusCode() + ": " + body
                 );
