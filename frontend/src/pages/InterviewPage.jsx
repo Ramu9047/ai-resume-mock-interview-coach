@@ -282,7 +282,7 @@ export default function InterviewPage() {
           {/* Action Footer */}
           <div className="mt-6 flex items-center justify-between pt-4 border-t border-[#26262B]">
             <p className="text-xs text-[#8A8A8F] font-mono hidden sm:block">
-              Answers are evaluated live by Groq LLaMA 3.3 70B.
+              Answers are evaluated live by AI Engine.
             </p>
 
             <button

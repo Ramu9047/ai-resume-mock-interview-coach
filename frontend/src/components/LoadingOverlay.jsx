@@ -154,7 +154,7 @@ export default function LoadingOverlay({ visible }) {
 
         {/* Monospace Credential Line */}
         <div className="mt-6 text-center text-[10px] font-mono text-[#8A8A8F] border-t border-[#26262B] pt-3 font-medium">
-          ENGINE · GROQ LLAMA 3.3 70B ACCELERATED
+          AI ENGINE · ACCELERATED
         </div>
       </div>
     </div>

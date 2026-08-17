@@ -1331,14 +1331,39 @@ export default function BuilderPage() {
               <span className="text-xs text-[#8A8A8F] font-mono font-medium">
                 Step {activeStep + 1} of {STEPS.length}: <span className="text-[#FF5A1F] font-bold">{STEPS[activeStep].title}</span>
               </span>
-              <button
-                id="next-step-btn"
-                onClick={() => setActiveStep(prev => Math.min(STEPS.length - 1, prev + 1))}
-                disabled={activeStep === STEPS.length - 1}
-                className="btn-primary text-xs py-2 px-4 shadow-sm uppercase font-bold"
-              >
-                Next Step →
-              </button>
+              {activeStep === STEPS.length - 1 ? (
+                <button
+                  id="finish-export-btn"
+                  onClick={exportPdf}
+                  disabled={exporting}
+                  className="btn-primary text-xs py-2 px-5 shadow-sm uppercase font-bold flex items-center gap-1.5"
+                >
+                  {exporting ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Exporting PDF...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                      </svg>
+                      Finish & Export PDF →
+                    </>
+                  )}
+                </button>
+              ) : (
+                <button
+                  id="next-step-btn"
+                  onClick={() => setActiveStep(prev => Math.min(STEPS.length - 1, prev + 1))}
+                  className="btn-primary text-xs py-2 px-4 shadow-sm uppercase font-bold"
+                >
+                  Next Step →
+                </button>
+              )}
             </div>
           </div>
         </div>

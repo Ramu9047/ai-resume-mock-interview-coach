@@ -18,7 +18,7 @@ export default function HowItWorksModal({ isOpen, onClose }) {
     {
       step: '02',
       title: 'ATS Signal Scoring',
-      desc: 'Unlock an overall ATS score plus 4 sub-score breakdowns (Formatting, Keywords, Relevance, Skills) via Groq LLaMA 3.3 70B.',
+      desc: 'Unlock an overall ATS score plus 4 sub-score breakdowns (Formatting, Keywords, Relevance, Skills) via precision AI analysis.',
       icon: '⚡',
     },
     {
@@ -102,7 +102,7 @@ export default function HowItWorksModal({ isOpen, onClose }) {
           {/* Footer Action */}
           <div className="pt-2 flex items-center justify-between border-t border-[#26262B]">
             <span className="text-[11px] font-mono text-[#8A8A8F]">
-              ENGINE · GROQ LLAMA 3.3 70B
+              AI ENGINE · ACTIVE
             </span>
             <button onClick={onClose} className="btn-primary py-2 px-5 text-xs shadow-sm">
               Got It

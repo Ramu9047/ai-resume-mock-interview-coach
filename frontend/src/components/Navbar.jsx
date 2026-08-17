@@ -72,7 +72,7 @@ export default function Navbar() {
           {/* Quiet Monospace Credential Line (Desktop) */}
           <div className="hidden lg:flex items-center gap-2 text-[11px] font-mono font-medium text-[#8A8A8F] bg-[#131316] px-3.5 py-1 rounded border border-[#26262B]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#FF5A1F]" />
-            <span>ENGINE · GROQ LLAMA 3.3 70B</span>
+            <span>AI ENGINE · ACTIVE</span>
           </div>
 
           {/* Desktop Nav Links */}
