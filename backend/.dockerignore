@@ -2,7 +2,7 @@
 .gitignore
 .idea
 .vscode
-target/
+!target/*.jar
 logs/
 .env
 .env.*

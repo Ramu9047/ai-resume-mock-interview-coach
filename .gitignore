@@ -27,3 +27,6 @@ build/
 
 # Temporary scratch files
 scratch*
+
+.vercel
+.env*

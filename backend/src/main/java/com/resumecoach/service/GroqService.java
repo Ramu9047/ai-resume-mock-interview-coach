@@ -47,6 +47,8 @@ public class GroqService {
             .baseUrl(baseUrl)
             .defaultHeader("Authorization", "Bearer " + this.apiKey)
             .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .defaultHeader("Accept", MediaType.APPLICATION_JSON_VALUE)
+            .defaultHeader("User-Agent", "ResumeCoachAI/1.0")
             .build();
     }
 
@@ -63,22 +65,30 @@ public class GroqService {
 
     /**
      * Calls Groq with optional JSON response format enforcement.
+     * Iterates through primary model and an active fallback list to prevent decommission errors.
      */
     public String chat(String systemPrompt, String userMessage, boolean isJson) {
-        try {
-            return executeChat(this.model, systemPrompt, userMessage, isJson);
-        } catch (GroqApiException e) {
-            String fallbackModel = "llama3-8b-8192";
-            if (!fallbackModel.equalsIgnoreCase(this.model)) {
-                log.warn("[GROQ FALLBACK] Primary model '{}' failed ({}), retrying with '{}'...", this.model, e.getMessage(), fallbackModel);
-                try {
-                    return executeChat(fallbackModel, systemPrompt, userMessage, isJson);
-                } catch (Exception fallbackErr) {
-                    log.error("[GROQ FALLBACK FAILED] Fallback model also failed: {}", fallbackErr.getMessage());
-                }
+        List<String> modelCandidates = List.of(
+            this.model,
+            "openai/gpt-oss-20b",
+            "openai/gpt-oss-120b",
+            "qwen/qwen3.6-27b"
+        );
+
+        Exception lastException = null;
+        for (String targetModel : modelCandidates) {
+            if (targetModel == null || targetModel.isBlank()) continue;
+            try {
+                return executeChat(targetModel, systemPrompt, userMessage, isJson);
+            } catch (Exception e) {
+                lastException = e;
+                log.warn("[GROQ RETRY] Model '{}' failed ({}). Trying next available model candidate...", targetModel, e.getMessage());
             }
-            throw e;
         }
+        if (lastException instanceof GroqApiException gae) {
+            throw gae;
+        }
+        throw new GroqApiException("All Groq model candidates failed: " + (lastException != null ? lastException.getMessage() : "Unknown error"));
     }
 
     private String executeChat(String targetModel, String systemPrompt, String userMessage, boolean isJson) {

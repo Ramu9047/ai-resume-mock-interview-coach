@@ -803,7 +803,7 @@ export default function BuilderPage() {
     el.style.position = 'relative'
     el.style.width = '794px'   // 210mm at 96dpi — exact A4 pixel width
     el.style.height = 'auto'
-    el.style.minHeight = '1123px'  // 297mm at 96dpi
+    el.style.minHeight = '1122px'  // 297mm at 96dpi (1122.52px limit to prevent blank page 2 spill)
     el.style.overflow = 'visible'
 
     // Unhide parent so it doesn't clip the full-height content

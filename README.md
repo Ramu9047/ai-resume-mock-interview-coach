@@ -11,7 +11,7 @@ The **AI Resume & Mock Interview Coach** combines interactive resume authoring, 
 ### Key Highlights
 - **Interactive Resume Builder**: Real-time A4 page preview, multi-template styling, automatic page boundary detection, dynamic field improvement, and client-side multi-page PDF export (`html2pdf.js`).
 - **PDF Resume Ingestion**: Server-side document extraction powered by **Apache PDFBox** to automatically map uploaded resumes into editable builder structures.
-- **AI ATS Scoring & Analysis**: Uses Groq's **Llama 3.3 70B** model to analyze resumes against target Job Descriptions, extracting keyword match percentages, missing core competencies, and section-by-section improvement strategies.
+- **AI ATS Scoring & Analysis**: Uses Groq's **GPT OSS 120B / Qwen3.6 27B** models to analyze resumes against target Job Descriptions, extracting keyword match percentages, missing core competencies, and section-by-section improvement strategies.
 - **AI Mock Interview Coach**: Generates dynamic technical and behavioral interview questions tailored to the candidate's background and target job description, rating user responses on clarity, relevancy, and STAR methodology.
 - **Hardened Admin Analytics**: Secured administrative dashboard visualizing ATS trends over time, top missing skill gaps, and in-demand keywords across analyzed job descriptions.
 
@@ -41,7 +41,7 @@ The **AI Resume & Mock Interview Coach** combines interactive resume authoring, 
 ### Backend
 - **Framework**: Spring Boot 3.4 (Java 21 / 17+)
 - **Database**: MongoDB (Spring Data MongoDB)
-- **AI Engine**: Groq REST API (`llama-3.3-70b-versatile`)
+- **AI Engine**: Groq REST API (`openai/gpt-oss-20b`)
 - **PDF Processing**: Apache PDFBox 3.0
 - **Logging**: Logback with dedicated isolated security audit logger (`logs/admin_audit.log`)
 

@@ -1,23 +1,20 @@
-# ─── Stage 1: Build Spring Boot Application ────────────────────────────────────
-FROM maven:3.9.9-eclipse-temurin-21-alpine AS builder
-WORKDIR /app
+# ─── Stage 1: Maven Build ──────────────────────────────────────────────
+FROM maven:3.9-eclipse-temurin-21-alpine AS builder
+WORKDIR /build
 
-# Copy source code and build executable JAR
 COPY pom.xml .
 COPY src ./src
-RUN mvn clean package -DskipTests -B
 
-# ─── Stage 2: Minimal Runtime ─────────────────────────────────────────────────
+RUN mvn clean package -DskipTests
+
+# ─── Stage 2: Production Minimal Runtime ─────────────────────────────
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Create non-root user and logs directory with proper ownership
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# Copy compiled JAR from builder stage
-COPY --from=builder /app/target/resume-coach-backend-*.jar app.jar
+COPY --from=builder /build/target/resume-coach-backend-*.jar app.jar
 
-# Ensure /app and /app/logs are owned by appuser
 RUN mkdir -p /app/logs && chown -R appuser:appgroup /app
 
 USER appuser

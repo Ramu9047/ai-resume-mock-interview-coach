@@ -8,7 +8,7 @@ spring.data.mongodb.uri=mongodb://localhost:27017/resume_coach
 # Set GROQ_API_KEY as an environment variable or fill in below for local dev
 groq.api.key=${GROQ_API_KEY:your_groq_api_key_here}
 groq.api.base-url=https://api.groq.com/openai/v1
-groq.model=llama-3.3-70b-versatile
+groq.model=openai/gpt-oss-20b
 
 # ─── File Upload Limits ───────────────────────────────────────────────────────
 spring.servlet.multipart.max-file-size=5MB
