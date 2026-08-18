@@ -791,6 +791,7 @@ export default function BuilderPage() {
       transform: el.style.transform,
       height: el.style.height,
       minHeight: el.style.minHeight,
+      maxHeight: el.style.maxHeight,
       overflow: el.style.overflow,
       position: el.style.position,
       width: el.style.width,
@@ -803,8 +804,21 @@ export default function BuilderPage() {
     el.style.position = 'relative'
     el.style.width = '794px'   // 210mm at 96dpi — exact A4 pixel width
     el.style.height = 'auto'
-    el.style.minHeight = '1122px'  // 297mm at 96dpi (1122.52px limit to prevent blank page 2 spill)
+    el.style.minHeight = 'auto'
     el.style.overflow = 'visible'
+
+    // Calculate natural content height and dynamic A4 page count budget
+    const innerContent = el.firstElementChild
+    const rawHeight = innerContent ? innerContent.scrollHeight : el.scrollHeight
+    const a4PxHeight = 1122.519685
+    const numPages = Math.max(1, Math.ceil((rawHeight - 10) / a4PxHeight))
+    // 1120px per page ensures rendered height is strictly <= 296.3mm (< 297mm A4 limit), preventing blank page spill
+    const exactPageBudgetPx = numPages * 1120
+
+    el.style.height = `${exactPageBudgetPx}px`
+    el.style.minHeight = `${exactPageBudgetPx}px`
+    el.style.maxHeight = `${exactPageBudgetPx}px`
+    el.style.overflow = 'hidden'
 
     // Unhide parent so it doesn't clip the full-height content
     if (parentWrapper) parentWrapper.style.overflow = 'visible'
@@ -838,6 +852,7 @@ export default function BuilderPage() {
             scrollX: 0,
             scrollY: 0,
             width: 794,
+            height: exactPageBudgetPx,
           },
           pagebreak: { mode: ['css', 'legacy'] },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -854,6 +869,7 @@ export default function BuilderPage() {
       el.style.width = saved.width
       el.style.height = saved.height
       el.style.minHeight = saved.minHeight
+      el.style.maxHeight = saved.maxHeight
       el.style.overflow = saved.overflow
       if (parentWrapper && savedParentOverflow !== null) {
         parentWrapper.style.overflow = savedParentOverflow
